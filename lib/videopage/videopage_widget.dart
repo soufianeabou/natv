@@ -224,7 +224,7 @@ class _VideopageWidgetState extends State<VideopageWidget> {
                                   
                                   // Filter out the current video
                                   final relatedVideos = videos.where((video) {
-                                    final videoId = getJsonField(video, r'''$.id.videoId''').toString();
+                                    final videoId = getJsonField(video, r'''$.snippet.resourceId.videoId''').toString();
                                     return videoId != widget.videoID;
                                   }).toList();
                                   
@@ -262,7 +262,7 @@ class _VideopageWidgetState extends State<VideopageWidget> {
                                               builder: (context) => VideopageWidget(
                                                 videoID: getJsonField(
                                                   relatedVideosItem,
-                                                  r'''$.id.videoId''',
+                                                  r'''$.snippet.resourceId.videoId''',
                                                 ).toString(),
                                               ),
                                             ),

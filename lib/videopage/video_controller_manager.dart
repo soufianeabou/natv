@@ -1,5 +1,5 @@
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-import 'package:webviewx_plus/webviewx_plus.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 /// Global manager to track and stop all active video players
 /// Ensures only one video plays at a time and handles proper cleanup
@@ -9,7 +9,7 @@ class VideoControllerManager {
   VideoControllerManager._internal();
 
   final Set<YoutubePlayerController> _activeControllers = {};
-  WebViewXController? _liveStreamController;
+  WebViewController? _liveStreamController;
   bool _isLiveStreamActive = false;
 
   /// Register a YouTube player controller
@@ -25,7 +25,7 @@ class VideoControllerManager {
   }
 
   /// Register a live stream WebView controller
-  void registerLiveStream(WebViewXController controller) {
+  void registerLiveStream(WebViewController controller) {
     _liveStreamController = controller;
     _isLiveStreamActive = true;
     print('VideoControllerManager: Registered live stream controller');
@@ -58,7 +58,6 @@ class VideoControllerManager {
         }
       } catch (e) {
         print('VideoControllerManager: Error stopping YouTube controller: $e');
-        // Controller might be disposed, continue with others
       }
     }
     
@@ -69,14 +68,10 @@ class VideoControllerManager {
     // Stop live stream by loading blank page
     if (_liveStreamController != null && _isLiveStreamActive) {
       try {
-        _liveStreamController?.loadContent(
-          'about:blank',
-          sourceType: SourceType.url,
-        );
+        _liveStreamController?.loadRequest(Uri.parse('about:blank'));
         print('VideoControllerManager: Stopped live stream');
       } catch (e) {
         print('VideoControllerManager: Error stopping live stream: $e');
-        // Controller might be disposed, ignore
       }
     }
   }
@@ -106,10 +101,7 @@ class VideoControllerManager {
   void stopLiveStream() {
     if (_liveStreamController != null && _isLiveStreamActive) {
       try {
-        _liveStreamController?.loadContent(
-          'about:blank',
-          sourceType: SourceType.url,
-        );
+        _liveStreamController?.loadRequest(Uri.parse('about:blank'));
         print('VideoControllerManager: Stopped live stream');
       } catch (e) {
         print('VideoControllerManager: Error stopping live stream: $e');

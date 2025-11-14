@@ -6,7 +6,6 @@ import '/videopage/video_controller_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:webviewx_plus/webviewx_plus.dart';
 
 class SidebarWidget extends StatelessWidget {
   const SidebarWidget({
@@ -19,7 +18,7 @@ class SidebarWidget extends StatelessWidget {
       width: MediaQuery.of(context).size.width * 0.75,
       elevation: 16,
       child: SafeArea(
-        child: WebViewAware(
+        child: Container(
           child: Container(
             width: double.infinity,
             height: double.infinity,
