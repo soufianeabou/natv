@@ -28,9 +28,11 @@ class LiveCopyCopyWidget extends StatefulWidget {
   State<LiveCopyCopyWidget> createState() => _LiveCopyCopyWidgetState();
 }
 
-class _LiveCopyCopyWidgetState extends State<LiveCopyCopyWidget> {
+class _LiveCopyCopyWidgetState extends State<LiveCopyCopyWidget> with WidgetsBindingObserver {
   late LiveCopyCopyModel _model;
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  int _webViewRebuildCount = 0; // Counter to force WebView rebuild
+  bool _hasNavigatedAway = false;
 
   @override
   void initState() {
@@ -38,15 +40,35 @@ class _LiveCopyCopyWidgetState extends State<LiveCopyCopyWidget> {
     _model = createModel(context, () => LiveCopyCopyModel());
     _model.switchValue = FlutterFlowModel.globalSwitchValue;
     
+    // Add lifecycle observer
+    WidgetsBinding.instance.addObserver(this);
+    
     // Start portrait-locked
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    
+    print('LiveCopyCopy: initState - initializing live stream');
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    
+    if (state == AppLifecycleState.resumed && _hasNavigatedAway) {
+      // App resumed and we previously navigated away - recreate WebView
+      print('LiveCopyCopy: App resumed after navigation, recreating WebView');
+      setState(() {
+        _webViewRebuildCount++;
+        _hasNavigatedAway = false;
+      });
+    }
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     VideoControllerManager().unregisterLiveStream();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
@@ -205,6 +227,7 @@ class _LiveCopyCopyWidgetState extends State<LiveCopyCopyWidget> {
                           Container(
                             width: double.infinity,
                             child: FlutterFlowWebView(
+                              key: ValueKey(_webViewRebuildCount), // CRITICAL: Forces recreation
                               content: 'https://mn-nl.mncdn.com/nafrica_tv/live/index.m3u8',
                               bypass: false,
                               width: MediaQuery.sizeOf(context).width,
@@ -212,6 +235,7 @@ class _LiveCopyCopyWidgetState extends State<LiveCopyCopyWidget> {
                               verticalScroll: false,
                               horizontalScroll: false,
                               onControllerCreated: (controller) {
+                                print('LiveCopyCopy: WebView controller created (rebuild #$_webViewRebuildCount), registering live stream');
                                 VideoControllerManager().registerLiveStream(controller);
                               },
                               onFullscreenChanged: _handleFullscreenChange,
@@ -313,13 +337,22 @@ class _LiveCopyCopyWidgetState extends State<LiveCopyCopyWidget> {
                                             hoverColor: Colors.transparent,
                                             highlightColor: Colors.transparent,
                                             onTap: () async {
+                                              print('LiveCopyCopy: Navigating to video, stopping all videos');
+                                              _hasNavigatedAway = true; // Mark that we're navigating away
                                               VideoControllerManager().stopAllVideos();
-                                              context.pushNamed(
+                                              
+                                              await context.pushNamed(
                                                 VideopageWidget.routeName,
                                                 pathParameters: {
                                                   'videoID': TestApiYoutubeCall.vIdeoID(listViewTestApiYoutubeResponse.jsonBody)?.elementAtOrNull(itemsIndex) ?? '',
                                                 },
                                               );
+                                              
+                                              // When we return from the video page, recreate the WebView
+                                              print('LiveCopyCopy: Returned from video page, recreating WebView');
+                                              setState(() {
+                                                _webViewRebuildCount++;
+                                              });
                                             },
                                             child: Container(
                                               height: 120,
