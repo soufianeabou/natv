@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "659876607355",
+    "project_id": "natv-qji7gm",
+    "storage_bucket": "natv-qji7gm.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:659876607355:android:dd15fca55f9b8a8cab79de",
+        "android_client_info": {
+          "package_name": "com.northafricatv.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsg6dNkX0duk3cBSMCccgSlYAGoR1BIg8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

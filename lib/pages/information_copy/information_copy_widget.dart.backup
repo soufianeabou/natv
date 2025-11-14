@@ -1,0 +1,1233 @@
+import '/flutter_flow/flutter_flow_icon_button.dart';
+import '/flutter_flow/flutter_flow_theme.dart';
+import '/flutter_flow/flutter_flow_util.dart';
+import '/flutter_flow/flutter_flow_widgets.dart';
+import 'dart:ui';
+import '/index.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:simple_gradient_text/simple_gradient_text.dart';
+import 'package:webviewx_plus/webviewx_plus.dart';
+import 'information_copy_model.dart';
+export 'information_copy_model.dart';
+
+/// Create a beautiful "InformationCopy" page.
+///
+/// Keep all navigation exactly the same. Only change the body content.
+///
+/// ## WHAT TO KEEP:
+/// - Keep blue AppBar with hamburger menu
+/// - Keep Drawer with all menu items
+/// - Keep bottom navigation with 4 icons
+/// - Keep all page routing
+///
+/// ## STEP BY STEP DESIGN:
+///
+/// ### STEP 1: PAGE BACKGROUND
+/// - Set page background to dark gradient
+/// - Color 1: #162F6A (dark blue)
+/// - Color 2: #0f172a (navy)
+///
+/// ### STEP 2: ADD SCROLLING
+/// - Wrap body content in SingleChildScrollView
+/// - Set physics to BouncingScrollPhysics
+///
+/// ### STEP 3: HERO SECTION (Replace text wall)
+/// - Add Container: width full, height 250px
+/// - Background: Gradient from #162F6A to #1e3a8a
+/// - Add padding: 24px all sides
+/// - Center everything
+///
+/// Inside hero Container add Column:
+/// - Add Container: 80x80px, circular, white background 20% opacity
+/// - Add TV icon inside: size 40px, color #C8AB6B
+/// - Add title Text: "North Africa TV" - size 28px, white, bold
+/// - Add subtitle Text: "قناة شمال أفريقيا" - size 18px, color #C8AB6B
+///
+/// ### STEP 4: ABOUT SECTION
+/// - Add Container with padding 20px
+/// - Add title Text: "من نحن" - size 24px, white, bold, centered
+/// - Add card Container: white background, rounded corners 16px, shadow
+/// - Inside card add padding 20px
+/// - Add short description text about the channel (2-3 sentences)
+///
+/// ### STEP 5: MISSION CARD
+/// - Add Container: full width, margin 20px
+/// - Background: gradient #7c3aed to #5b21b6
+/// - Border radius: 16px, shadow
+/// - Add padding 20px
+/// - Add icon: lightbulb, size 32px, white
+/// - Add title: "رؤيتنا" - white, bold
+/// - Add mission text: short paragraph about vision
+///
+/// ### STEP 6: VALUES SECTION
+/// - Add title: "قيمنا" - white, centered, size 20px
+/// - Add Row with 2 small cards:
+///
+/// Card 1:
+/// - Background: gradient #10b981 to #059669
+/// - Add quality icon
+/// - Add text: "الجودة"
+///
+/// Card 2:
+/// - Background: gradient #C8AB6B to #d4b776
+/// - Add star icon
+/// - Add text: "التميز"
+///
+/// ### STEP 7: CONTACT CTA
+/// - Add Container at bottom
+/// - Background: gradient #C8AB6B to #d4b776
+/// - Border radius: 16px, padding 24px
+/// - Add phone icon, size 32px, white
+/// - Add text: "تواصل معنا" - white, bold
+/// - Add button: "اتصل بنا" - white background, blue text
+///
+/// ### STEP 8: SPACING
+/// - Add SizedBox height 24px between each section
+/// - Add SizedBox height 40px at bottom
+///
+/// ## IMPORTANT:
+/// - Use simple Containers and Text widgets only
+/// - Apply gradients to Container backgrounds
+/// - Use consistent spacing: 16px and 24px
+/// - Make text white or gold colors
+/// - Add shadows to all cards
+/// - Keep Arabic text right-aligned
+///
+/// Build this step by step. Each Container should have proper background
+/// color or gradient. Each Text should have proper size and color specified.
+class InformationCopyWidget extends StatefulWidget {
+  const InformationCopyWidget({super.key});
+
+  static String routeName = 'InformationCopy';
+  static String routePath = '/informationCopy';
+
+  @override
+  State<InformationCopyWidget> createState() => _InformationCopyWidgetState();
+}
+
+class _InformationCopyWidgetState extends State<InformationCopyWidget> {
+  late InformationCopyModel _model;
+
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+    _model = createModel(context, () => InformationCopyModel());
+
+    // Initialize switch value from global state
+    _model.switchValue = FlutterFlowModel.globalSwitchValue;
+  }
+
+  @override
+  void dispose() {
+    _model.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
+        key: scaffoldKey,
+        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+        drawer: Drawer(
+          elevation: 16.0,
+          child: WebViewAware(
+            child: Align(
+              alignment: AlignmentDirectional(-1.0, 0.0),
+              child: Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(1.0, 0.0, 0.0, 0.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: FlutterFlowTheme.of(context).primaryBackground,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Container(
+                        width: 600.0,
+                        height: 120.0,
+                        decoration: BoxDecoration(
+                          color: Color(0xFF162F6A),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Expanded(
+                              child: Align(
+                                alignment: AlignmentDirectional(0.0, 1.0),
+                                child: Padding(
+                                  padding: EdgeInsetsDirectional.fromSTEB(
+                                      0.0, 50.0, 0.0, 0.0),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    child: Image.asset(
+                                      'assets/images/LOGOOO1.png',
+                                      width: 120.0,
+                                      height: 80.0,
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        onTap: () async {
+                          context.pushNamed(LiveCopyCopyWidget.routeName);
+                        },
+                        child: Container(
+                          width: 262.3,
+                          height: 68.2,
+                          decoration: BoxDecoration(
+                            color:
+                                FlutterFlowTheme.of(context).primaryBackground,
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(0.0),
+                              bottomRight: Radius.circular(0.0),
+                              topLeft: Radius.circular(0.0),
+                              topRight: Radius.circular(0.0),
+                            ),
+                            border: Border.all(
+                              color: Color(0x0014181B),
+                            ),
+                          ),
+                          child: Align(
+                            alignment: AlignmentDirectional(-0.8, 0.0),
+                            child: Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Align(
+                                      alignment: AlignmentDirectional(1.0, 0.0),
+                                      child: Icon(
+                                        Icons.live_tv,
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        size: 25.0,
+                                      ),
+                                    ),
+                                    Align(
+                                      alignment: AlignmentDirectional(1.0, 0.0),
+                                      child: Text(
+                                        FFLocalizations.of(context).getText(
+                                          '2dbrroj8' /* البث المباشر */,
+                                        ),
+                                        style: FlutterFlowTheme.of(context)
+                                            .headlineMedium
+                                            .override(
+                                              font: GoogleFonts.changa(
+                                                fontWeight:
+                                                    FlutterFlowTheme.of(context)
+                                                        .headlineMedium
+                                                        .fontWeight,
+                                                fontStyle:
+                                                    FlutterFlowTheme.of(context)
+                                                        .headlineMedium
+                                                        .fontStyle,
+                                              ),
+                                              color:
+                                                  FlutterFlowTheme.of(context)
+                                                      .secondaryText,
+                                              fontSize: 16.0,
+                                              letterSpacing: 0.0,
+                                              fontWeight:
+                                                  FlutterFlowTheme.of(context)
+                                                      .headlineMedium
+                                                      .fontWeight,
+                                              fontStyle:
+                                                  FlutterFlowTheme.of(context)
+                                                      .headlineMedium
+                                                      .fontStyle,
+                                            ),
+                                      ),
+                                    ),
+                                  ].divide(SizedBox(width: 20.0)),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        onTap: () async {
+                          context.pushNamed(FrequenciesCopyWidget.routeName);
+                        },
+                        child: Container(
+                          width: 262.3,
+                          height: 68.2,
+                          decoration: BoxDecoration(
+                            color:
+                                FlutterFlowTheme.of(context).primaryBackground,
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(0.0),
+                              bottomRight: Radius.circular(0.0),
+                              topLeft: Radius.circular(0.0),
+                              topRight: Radius.circular(0.0),
+                            ),
+                            border: Border.all(
+                              color: Color(0x0014181B),
+                            ),
+                          ),
+                          child: Align(
+                            alignment: AlignmentDirectional(-0.8, 0.0),
+                            child: Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Align(
+                                      alignment: AlignmentDirectional(1.0, 0.0),
+                                      child: Icon(
+                                        Icons.satellite_alt_rounded,
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        size: 25.0,
+                                      ),
+                                    ),
+                                    Align(
+                                      alignment: AlignmentDirectional(1.0, 0.0),
+                                      child: Text(
+                                        FFLocalizations.of(context).getText(
+                                          'lxexlop7' /* الترددات */,
+                                        ),
+                                        style: FlutterFlowTheme.of(context)
+                                            .headlineMedium
+                                            .override(
+                                              font: GoogleFonts.changa(
+                                                fontWeight:
+                                                    FlutterFlowTheme.of(context)
+                                                        .headlineMedium
+                                                        .fontWeight,
+                                                fontStyle:
+                                                    FlutterFlowTheme.of(context)
+                                                        .headlineMedium
+                                                        .fontStyle,
+                                              ),
+                                              color:
+                                                  FlutterFlowTheme.of(context)
+                                                      .secondaryText,
+                                              fontSize: 16.0,
+                                              letterSpacing: 0.0,
+                                              fontWeight:
+                                                  FlutterFlowTheme.of(context)
+                                                      .headlineMedium
+                                                      .fontWeight,
+                                              fontStyle:
+                                                  FlutterFlowTheme.of(context)
+                                                      .headlineMedium
+                                                      .fontStyle,
+                                            ),
+                                      ),
+                                    ),
+                                  ].divide(SizedBox(width: 20.0)),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        onTap: () async {
+                          context.pushNamed(ContactCopyWidget.routeName);
+                        },
+                        child: Container(
+                          width: 262.3,
+                          height: 68.2,
+                          decoration: BoxDecoration(
+                            color:
+                                FlutterFlowTheme.of(context).primaryBackground,
+                          ),
+                          child: Align(
+                            alignment: AlignmentDirectional(-0.8, 0.0),
+                            child: Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Align(
+                                      alignment: AlignmentDirectional(1.0, 0.0),
+                                      child: Icon(
+                                        Icons.wifi_calling_3_outlined,
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        size: 30.0,
+                                      ),
+                                    ),
+                                    Align(
+                                      alignment: AlignmentDirectional(1.0, 0.0),
+                                      child: Text(
+                                        FFLocalizations.of(context).getText(
+                                          'dxgzu70r' /* تواصل معنا */,
+                                        ),
+                                        style: FlutterFlowTheme.of(context)
+                                            .headlineMedium
+                                            .override(
+                                              font: GoogleFonts.changa(
+                                                fontWeight:
+                                                    FlutterFlowTheme.of(context)
+                                                        .headlineMedium
+                                                        .fontWeight,
+                                                fontStyle:
+                                                    FlutterFlowTheme.of(context)
+                                                        .headlineMedium
+                                                        .fontStyle,
+                                              ),
+                                              color:
+                                                  FlutterFlowTheme.of(context)
+                                                      .secondaryText,
+                                              fontSize: 16.0,
+                                              letterSpacing: 0.0,
+                                              fontWeight:
+                                                  FlutterFlowTheme.of(context)
+                                                      .headlineMedium
+                                                      .fontWeight,
+                                              fontStyle:
+                                                  FlutterFlowTheme.of(context)
+                                                      .headlineMedium
+                                                      .fontStyle,
+                                            ),
+                                      ),
+                                    ),
+                                  ].divide(SizedBox(width: 10.0)),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        onTap: () async {
+                          context.pushNamed(ProgrammeCopyWidget.routeName);
+                        },
+                        child: Container(
+                          width: 262.3,
+                          height: 68.2,
+                          decoration: BoxDecoration(
+                            color:
+                                FlutterFlowTheme.of(context).primaryBackground,
+                          ),
+                          child: Align(
+                            alignment: AlignmentDirectional(-0.8, 0.0),
+                            child: Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Align(
+                                      alignment: AlignmentDirectional(1.0, 0.0),
+                                      child: Icon(
+                                        Icons.movie_outlined,
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        size: 30.0,
+                                      ),
+                                    ),
+                                    Align(
+                                      alignment: AlignmentDirectional(1.0, 0.0),
+                                      child: Text(
+                                        FFLocalizations.of(context).getText(
+                                          'haz5zfn3' /* برامجنا */,
+                                        ),
+                                        style: FlutterFlowTheme.of(context)
+                                            .headlineMedium
+                                            .override(
+                                              font: GoogleFonts.changa(
+                                                fontWeight:
+                                                    FlutterFlowTheme.of(context)
+                                                        .headlineMedium
+                                                        .fontWeight,
+                                                fontStyle:
+                                                    FlutterFlowTheme.of(context)
+                                                        .headlineMedium
+                                                        .fontStyle,
+                                              ),
+                                              color:
+                                                  FlutterFlowTheme.of(context)
+                                                      .secondaryText,
+                                              fontSize: 16.0,
+                                              letterSpacing: 0.0,
+                                              fontWeight:
+                                                  FlutterFlowTheme.of(context)
+                                                      .headlineMedium
+                                                      .fontWeight,
+                                              fontStyle:
+                                                  FlutterFlowTheme.of(context)
+                                                      .headlineMedium
+                                                      .fontStyle,
+                                            ),
+                                      ),
+                                    ),
+                                  ].divide(SizedBox(width: 10.0)),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        onTap: () async {
+                          context.pushNamed(InformationCopyWidget.routeName);
+                        },
+                        child: Container(
+                          width: 262.3,
+                          height: 68.2,
+                          decoration: BoxDecoration(
+                            color:
+                                FlutterFlowTheme.of(context).primaryBackground,
+                          ),
+                          child: Align(
+                            alignment: AlignmentDirectional(-0.8, 0.0),
+                            child: Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Align(
+                                      alignment: AlignmentDirectional(1.0, 0.0),
+                                      child: Icon(
+                                        Icons.info,
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        size: 30.0,
+                                      ),
+                                    ),
+                                    Align(
+                                      alignment: AlignmentDirectional(1.0, 0.0),
+                                      child: Text(
+                                        FFLocalizations.of(context).getText(
+                                          'w9zg61me' /* من نحن */,
+                                        ),
+                                        style: FlutterFlowTheme.of(context)
+                                            .headlineMedium
+                                            .override(
+                                              font: GoogleFonts.changa(
+                                                fontWeight:
+                                                    FlutterFlowTheme.of(context)
+                                                        .headlineMedium
+                                                        .fontWeight,
+                                                fontStyle:
+                                                    FlutterFlowTheme.of(context)
+                                                        .headlineMedium
+                                                        .fontStyle,
+                                              ),
+                                              color:
+                                                  FlutterFlowTheme.of(context)
+                                                      .secondaryText,
+                                              fontSize: 16.0,
+                                              letterSpacing: 0.0,
+                                              fontWeight:
+                                                  FlutterFlowTheme.of(context)
+                                                      .headlineMedium
+                                                      .fontWeight,
+                                              fontStyle:
+                                                  FlutterFlowTheme.of(context)
+                                                      .headlineMedium
+                                                      .fontStyle,
+                                            ),
+                                      ),
+                                    ),
+                                  ].divide(SizedBox(width: 10.0)),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding:
+                            EdgeInsetsDirectional.fromSTEB(0.0, 50.0, 0.0, 0.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color:
+                                FlutterFlowTheme.of(context).primaryBackground,
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Align(
+                                alignment: AlignmentDirectional(0.0, -1.0),
+                                child: Text(
+                                  'تابعونا ايضا',
+                                  style: FlutterFlowTheme.of(context)
+                                      .titleSmall
+                                      .override(
+                                        font: GoogleFonts.changa(
+                                          fontWeight: FontWeight.bold,
+                                          fontStyle:
+                                              FlutterFlowTheme.of(context)
+                                                  .titleSmall
+                                                  .fontStyle,
+                                        ),
+                                        fontSize: 17.0,
+                                        letterSpacing: 0.0,
+                                        fontWeight: FontWeight.bold,
+                                        fontStyle: FlutterFlowTheme.of(context)
+                                            .titleSmall
+                                            .fontStyle,
+                                      ),
+                                ),
+                              ),
+                              Align(
+                                alignment: AlignmentDirectional(0.0, 0.0),
+                                child: Column(
+                                  children: [
+
+                                    // Social media buttons
+                                    Padding(
+                                  padding: EdgeInsets.all(10.0),
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        FlutterFlowIconButton(
+                                          borderRadius: 8.0,
+                                          buttonSize: 40.0,
+                                          fillColor: Color(0xFFC8AB6B),
+                                          icon: FaIcon(
+                                            FontAwesomeIcons.youtube,
+                                            color: FlutterFlowTheme.of(context)
+                                                .info,
+                                            size: 24.0,
+                                          ),
+                                          onPressed: () async {
+                                            await launchURL(
+                                                'https://www.youtube.com/@northafricatv');
+                                          },
+                                        ),
+                                        FlutterFlowIconButton(
+                                          borderRadius: 8.0,
+                                          buttonSize: 40.0,
+                                          fillColor: Color(0xFFC8AB6B),
+                                          icon: FaIcon(
+                                                FontAwesomeIcons.xTwitter,
+                                            color: FlutterFlowTheme.of(context)
+                                                .info,
+                                            size: 24.0,
+                                          ),
+                                              onPressed: () async {
+                                                await launchURL(
+                                                    'https://x.com/NORTHAFRICATV');
+                                          },
+                                        ),
+                                        FlutterFlowIconButton(
+                                          borderRadius: 8.0,
+                                          buttonSize: 40.0,
+                                          fillColor: Color(0xFFC8AB6B),
+                                          icon: FaIcon(
+                                            FontAwesomeIcons.instagram,
+                                            color: FlutterFlowTheme.of(context)
+                                                .info,
+                                            size: 24.0,
+                                          ),
+                                          onPressed: () async {
+                                            await launchURL(
+                                                'https://www.instagram.com/natv.001/');
+                                          },
+                                        ),
+                                        FlutterFlowIconButton(
+                                          borderRadius: 8.0,
+                                          buttonSize: 40.0,
+                                          fillColor: Color(0xFFC8AB6B),
+                                          icon: Icon(
+                                            Icons.facebook,
+                                            color: FlutterFlowTheme.of(context)
+                                                .info,
+                                            size: 24.0,
+                                          ),
+                                          onPressed: () async {
+                                            await launchURL(
+                                                'https://web.facebook.com/people/NATV/61571163042014/');
+                                          },
+                                        ),
+                                        FlutterFlowIconButton(
+                                          borderRadius: 8.0,
+                                          buttonSize: 40.0,
+                                          fillColor: Color(0xFFC8AB6B),
+                                          icon: Icon(
+                                            Icons.tiktok_rounded,
+                                            color: FlutterFlowTheme.of(context)
+                                                .info,
+                                            size: 24.0,
+                                          ),
+                                          onPressed: () async {
+                                            await launchURL(
+                                                'https://www.tiktok.com/@nafricatv');
+                                          },
+                                        ),
+                                      ]
+                                          .divide(SizedBox(width: 16.0))
+                                          .around(SizedBox(width: 16.0)),
+                                    ),
+                                  ),
+                                ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      // Privacy Policy Button
+                      Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(16.0, 20.0, 16.0, 0.0),
+                        child: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              FlutterFlowIconButton(
+                                borderRadius: 8,
+                                buttonSize: 50,
+                                fillColor: Color(0xFF162F6A),
+                                icon: Icon(
+                                  Icons.privacy_tip_outlined,
+                                  color: Colors.white,
+                                  size: 24,
+                                ),
+                                onPressed: () async {
+                                  context.pushNamed('PrivacyPolicy');
+                                },
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                'سياسة الخصوصية',
+                                style: FlutterFlowTheme.of(context)
+                                    .titleSmall
+                                    .override(
+                                      font: GoogleFonts.changa(
+                                        fontWeight: FontWeight.bold,
+                                        fontStyle:
+                                            FlutterFlowTheme.of(context)
+                                                .titleSmall
+                                                .fontStyle,
+                                      ),
+                                      fontSize: 14,
+                                      letterSpacing: 0.0,
+                                      fontWeight: FontWeight.bold,
+                                      fontStyle: FlutterFlowTheme.of(context)
+                                          .titleSmall
+                                          .fontStyle,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Align(
+                          alignment: AlignmentDirectional(0.0, 0.8),
+                          child: Container(
+                            width: 325.5,
+                            height: 68.2,
+                            decoration: BoxDecoration(
+                              color: FlutterFlowTheme.of(context)
+                                  .primaryBackground,
+                            ),
+                            alignment: AlignmentDirectional(0.0, 1.0),
+                            child: Align(
+                              alignment: AlignmentDirectional(0.0, 1.0),
+                              child: Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.sunny,
+                                      color: FlutterFlowTheme.of(context)
+                                          .primaryText,
+                                      size: 24.0,
+                                    ),
+                                    Switch.adaptive(
+                                      value: _model.switchValue!,
+                                      onChanged: (newValue) async {
+                                        safeSetState(() =>
+                                            _model.switchValue = newValue!);
+                                        // Update global state
+                                        FlutterFlowModel.globalSwitchValue = newValue!;
+                                        if (newValue!) {
+                                          setDarkModeSetting(
+                                              context, ThemeMode.dark);
+                                        } else {
+                                          setDarkModeSetting(
+                                              context, ThemeMode.light);
+                                        }
+                                      },
+                                      activeColor: Color(0xFFC8AB6B),
+                                      activeTrackColor: Color(0xFFC8AB6B),
+                                      inactiveTrackColor:
+                                          FlutterFlowTheme.of(context)
+                                              .alternate,
+                                      inactiveThumbColor:
+                                          FlutterFlowTheme.of(context)
+                                              .secondaryBackground,
+                                    ),
+                                    Icon(
+                                      Icons.nightlight_sharp,
+                                      color: FlutterFlowTheme.of(context)
+                                          .primaryText,
+                                      size: 24.0,
+                                    ),
+                                  ].divide(SizedBox(width: 40.0)),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ]
+                        .divide(SizedBox(height: 0.0))
+                        .around(SizedBox(height: 0.0)),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        appBar: AppBar(
+          backgroundColor: Color(0xFF162F6A),
+          automaticallyImplyLeading: false,
+          leading: FlutterFlowIconButton(
+            borderColor: Colors.transparent,
+            borderRadius: 30.0,
+            borderWidth: 1.0,
+            buttonSize: 60.0,
+            icon: Icon(
+              Icons.dehaze_rounded,
+              color: Color(0xFFC8AB6B),
+              size: 30.0,
+            ),
+            onPressed: () async {
+              scaffoldKey.currentState!.openDrawer();
+            },
+          ),
+          title: ClipRRect(
+            borderRadius: BorderRadius.circular(8.0),
+            child: Image.asset(
+              'assets/images/LOGOOO1.png',
+              width: 200.0,
+              height: 60.0,
+              fit: BoxFit.contain,
+              alignment: Alignment(0.0, 0.0),
+            ),
+          ),
+          actions: [],
+          centerTitle: true,
+          elevation: 2.0,
+        ),
+        body: SafeArea(
+          top: true,
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Expanded(
+                child: Padding(
+                  padding:
+                      EdgeInsetsDirectional.fromSTEB(10.0, 10.0, 10.0, 10.0),
+                  child: Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                    ),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Padding(
+                            padding: EdgeInsetsDirectional.fromSTEB(
+                                20.0, 0.0, 20.0, 0.0),
+                            child: Container(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsetsDirectional.fromSTEB(
+                                        0.0, 5.0, 0.0, 0.0),
+                                    child: GradientText(
+                                      FFLocalizations.of(context).getText(
+                                        'oex9pjee' /* من نحن */,
+                                      ),
+                                      style: FlutterFlowTheme.of(context)
+                                          .titleLarge
+                                          .override(
+                                            font: GoogleFonts.changa(
+                                              fontWeight: FontWeight.bold,
+                                              fontStyle:
+                                                  FlutterFlowTheme.of(context)
+                                                      .titleLarge
+                                                      .fontStyle,
+                                            ),
+                                            color: Colors.white,
+                                            fontSize: 24.0,
+                                            letterSpacing: 0.0,
+                                            fontWeight: FontWeight.bold,
+                                            fontStyle:
+                                                FlutterFlowTheme.of(context)
+                                                    .titleLarge
+                                                    .fontStyle,
+                                          ),
+                                      colors: [
+                                        Color(0xFFC8AB6B),
+                                        Color(0xFFC8AB6B)
+                                      ],
+                                      gradientDirection: GradientDirection.btt,
+                                      gradientType: GradientType.linear,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsetsDirectional.fromSTEB(
+                                        0.0, 0.0, 0.0, 19.0),
+                                    child: Material(
+                                      color: Colors.transparent,
+                                      elevation: 4.0,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(16.0),
+                                      ),
+                                      child: Container(
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                          color: FlutterFlowTheme.of(context).secondaryBackground,
+                                          borderRadius:
+                                              BorderRadius.circular(16.0),
+                                        ),
+                                        child: Padding(
+                                          padding:
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  20.0, 20.0, 20.0, 20.0),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                FFLocalizations.of(context)
+                                                    .getText(
+                                                  'ms159ykk' /* قناة شمال أفريقيا هي منصة إعلا... */,
+                                                ),
+                                                style: FlutterFlowTheme.of(
+                                                        context)
+                                                    .bodyMedium
+                                                    .override(
+                                                      font: GoogleFonts.changa(
+                                                        fontWeight:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodyMedium
+                                                                .fontWeight,
+                                                        fontStyle:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodyMedium
+                                                                .fontStyle,
+                                                      ),
+                                                      color:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .primaryText,
+                                                      fontSize: 14.0,
+                                                      letterSpacing: 0.0,
+                                                      fontWeight:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .bodyMedium
+                                                              .fontWeight,
+                                                      fontStyle:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .bodyMedium
+                                                              .fontStyle,
+                                                    ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ].divide(SizedBox(height: 16.0)),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsetsDirectional.fromSTEB(
+                                20.0, 0.0, 20.0, 0.0),
+                            child: Material(
+                              color: Colors.transparent,
+                              elevation: 4.0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16.0),
+                              ),
+                              child: Container(
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Color(0xFFC8AB6B),
+                                      Color(0xFFD4B776)
+                                    ],
+                                    stops: [0.0, 1.0],
+                                    begin: AlignmentDirectional(0.0, 1.0),
+                                    end: AlignmentDirectional(0, -1.0),
+                                  ),
+                                  borderRadius: BorderRadius.circular(16.0),
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsetsDirectional.fromSTEB(
+                                      20.0, 20.0, 20.0, 20.0),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.lightbulb,
+                                        color: Colors.white,
+                                        size: 32.0,
+                                      ),
+                                      Text(
+                                        FFLocalizations.of(context).getText(
+                                          'ffn7r2mb' /* رؤيتنا */,
+                                        ),
+                                        style: FlutterFlowTheme.of(context)
+                                            .titleMedium
+                                            .override(
+                                              font: GoogleFonts.changa(
+                                                fontWeight: FontWeight.bold,
+                                                fontStyle:
+                                                    FlutterFlowTheme.of(context)
+                                                        .titleMedium
+                                                        .fontStyle,
+                                              ),
+                                              color: Colors.white,
+                                              fontSize: 20.0,
+                                              letterSpacing: 0.0,
+                                              fontWeight: FontWeight.bold,
+                                              fontStyle:
+                                                  FlutterFlowTheme.of(context)
+                                                      .titleMedium
+                                                      .fontStyle,
+                                            ),
+                                      ),
+                                      Text(
+                                        FFLocalizations.of(context).getText(
+                                          '24v15k4z' /* أن نكون الصوت الإعلامي الرائد ... */,
+                                        ),
+                                        style: FlutterFlowTheme.of(context)
+                                            .bodyMedium
+                                            .override(
+                                              font: GoogleFonts.changa(
+                                                fontWeight:
+                                                    FlutterFlowTheme.of(context)
+                                                        .bodyMedium
+                                                        .fontWeight,
+                                                fontStyle:
+                                                    FlutterFlowTheme.of(context)
+                                                        .bodyMedium
+                                                        .fontStyle,
+                                              ),
+                                              color: Colors.white,
+                                              fontSize: 14.0,
+                                              letterSpacing: 0.0,
+                                              fontWeight:
+                                                  FlutterFlowTheme.of(context)
+                                                      .bodyMedium
+                                                      .fontWeight,
+                                              fontStyle:
+                                                  FlutterFlowTheme.of(context)
+                                                      .bodyMedium
+                                                      .fontStyle,
+                                            ),
+                                      ),
+                                    ].divide(SizedBox(height: 12.0)),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsetsDirectional.fromSTEB(
+                                20.0, 60.0, 20.0, 0.0),
+                            child: Material(
+                              color: Colors.transparent,
+                              elevation: 4.0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16.0),
+                              ),
+                              child: Container(
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Color(0xFFC8AB6B),
+                                      Color(0xFFD4B776)
+                                    ],
+                                    stops: [0.0, 1.0],
+                                    begin: AlignmentDirectional(0.0, 1.0),
+                                    end: AlignmentDirectional(0, -1.0),
+                                  ),
+                                  borderRadius: BorderRadius.circular(16.0),
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsetsDirectional.fromSTEB(
+                                      24.0, 24.0, 24.0, 24.0),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.phone,
+                                        color: Colors.white,
+                                        size: 32.0,
+                                      ),
+                                      Text(
+                                        FFLocalizations.of(context).getText(
+                                          'l4mbxw3d' /* تواصل معنا */,
+                                        ),
+                                        style: FlutterFlowTheme.of(context)
+                                            .titleMedium
+                                            .override(
+                                              font: GoogleFonts.changa(
+                                                fontWeight: FontWeight.bold,
+                                                fontStyle:
+                                                    FlutterFlowTheme.of(context)
+                                                        .titleMedium
+                                                        .fontStyle,
+                                              ),
+                                              color: Colors.white,
+                                              fontSize: 20.0,
+                                              letterSpacing: 0.0,
+                                              fontWeight: FontWeight.bold,
+                                              fontStyle:
+                                                  FlutterFlowTheme.of(context)
+                                                      .titleMedium
+                                                      .fontStyle,
+                                            ),
+                                      ),
+                                      FFButtonWidget(
+                                        onPressed: () async {
+                                          context.pushNamed(
+                                              ContactCopyWidget.routeName);
+                                        },
+                                        text:
+                                            FFLocalizations.of(context).getText(
+                                          'vlj4eow2' /* اتصل بنا */,
+                                        ),
+                                        options: FFButtonOptions(
+                                          width: 150.0,
+                                          height: 44.0,
+                                          padding: EdgeInsets.all(8.0),
+                                          iconPadding:
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  0.0, 0.0, 0.0, 0.0),
+                                          color: Colors.white,
+                                          textStyle: FlutterFlowTheme.of(
+                                                  context)
+                                              .bodyLarge
+                                              .override(
+                                                font: GoogleFonts.changa(
+                                                  fontWeight:
+                                                      FlutterFlowTheme.of(
+                                                              context)
+                                                          .bodyLarge
+                                                          .fontWeight,
+                                                  fontStyle:
+                                                      FlutterFlowTheme.of(
+                                                              context)
+                                                          .bodyLarge
+                                                          .fontStyle,
+                                                ),
+                                                color: Color(0xFF162F6A),
+                                                letterSpacing: 0.0,
+                                                fontWeight:
+                                                    FlutterFlowTheme.of(context)
+                                                        .bodyLarge
+                                                        .fontWeight,
+                                                fontStyle:
+                                                    FlutterFlowTheme.of(context)
+                                                        .bodyLarge
+                                                        .fontStyle,
+                                              ),
+                                          elevation: 2.0,
+                                          borderRadius:
+                                              BorderRadius.circular(8.0),
+                                        ),
+                                      ),
+                                    ].divide(SizedBox(height: 16.0)),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsetsDirectional.fromSTEB(
+                                20.0, 0.0, 20.0, 0.0),
+                            child: Container(
+                              height: 40.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

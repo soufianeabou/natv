@@ -1,0 +1,2 @@
+/Users/soufianeaboulhamam/Downloads/na_tv 2/android/app/.cxx/RelWithDebInfo/24444g1d/arm64-v8a/CMakeFiles/edit_cache.dir
+/Users/soufianeaboulhamam/Downloads/na_tv 2/android/app/.cxx/RelWithDebInfo/24444g1d/arm64-v8a/CMakeFiles/rebuild_cache.dir
