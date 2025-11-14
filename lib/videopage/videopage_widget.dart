@@ -2,10 +2,8 @@ import '/backend/api_requests/api_calls.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_web_view.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import 'dart:ui';
-import '/index.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -41,18 +39,21 @@ class _VideopageWidgetState extends State<VideopageWidget> {
   void initState() {
     super.initState();
     _model = createModel(context, () => VideopageModel());
+    
     // Debug: Print videoID to verify it's being received
     if (widget.videoID != null && widget.videoID!.isNotEmpty) {
       print('VideoPage: Received videoID: ${widget.videoID}');
     } else {
       print('VideoPage: ERROR - videoID is null or empty!');
     }
+    
+    // Stop any other videos that might be playing
+    VideoControllerManager().stopAllVideos();
   }
 
   @override
   void dispose() {
     _model.dispose();
-
     super.dispose();
   }
 
@@ -80,6 +81,8 @@ class _VideopageWidgetState extends State<VideopageWidget> {
               size: 30.0,
             ),
             onPressed: () async {
+              // Stop any playing videos before navigating back
+              VideoControllerManager().stopAllVideos();
               Navigator.of(context).pop();
             },
           ),
@@ -98,8 +101,8 @@ class _VideopageWidgetState extends State<VideopageWidget> {
         ),
         body: SafeArea(
           top: true,
-            child: Container(
-              decoration: BoxDecoration(
+          child: Container(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -111,46 +114,46 @@ class _VideopageWidgetState extends State<VideopageWidget> {
                 stops: [0.0, 0.6, 1.0],
               ),
             ),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  // Video Player Section - Simplified to avoid overflow
-                  (widget.videoID != null && widget.videoID!.isNotEmpty)
-                      ? YouTubePlayerWidget(
-                          videoId: widget.videoID!,
-                          height: 240.0,
-                        )
-                      : Container(
-                          height: 240.0,
-                          margin: EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.error_outline,
-                                color: Colors.white70,
-                                size: 48,
-                              ),
-                              SizedBox(height: 16),
-                              Text(
-                                'Erreur: Video ID manquant',
-                                style: GoogleFonts.changa(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ],
-                          ),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                // Video Player Section
+                (widget.videoID != null && widget.videoID!.isNotEmpty)
+                    ? YouTubePlayerWidget(
+                        videoId: widget.videoID!,
+                        height: 240.0,
+                      )
+                    : Container(
+                        height: 240.0,
+                        margin: EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                  
-                  // Related Videos Section
-                  Expanded(
-                            child: Container(
-                              width: double.infinity,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.error_outline,
+                              color: Colors.white70,
+                              size: 48,
+                            ),
+                            SizedBox(height: 16),
+                            Text(
+                              'Erreur: Video ID manquant',
+                              style: GoogleFonts.changa(
+                                color: Colors.white,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                
+                // Related Videos Section
+                Expanded(
+                  child: Container(
+                    width: double.infinity,
                     margin: EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.03),
@@ -160,14 +163,14 @@ class _VideopageWidgetState extends State<VideopageWidget> {
                         width: 1,
                       ),
                     ),
-                              child: Column(
+                    child: Column(
                       children: [
                         // Section Header
                         Container(
                           width: double.infinity,
                           padding: EdgeInsets.all(20),
                           child: Row(
-                                children: [
+                            children: [
                               Container(
                                 width: 4,
                                 height: 24,
@@ -178,290 +181,173 @@ class _VideopageWidgetState extends State<VideopageWidget> {
                               ),
                               SizedBox(width: 12),
                               Text(
-                                'فيديوهات ذات صلة',
+                                'Vidéos Similaires',
                                 style: GoogleFonts.changa(
                                   color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
                                 ),
                               ),
-                              Spacer(),
-                              Icon(
-                                Icons.video_collection_outlined,
-                                color: Color(0xFFC8AB6B),
-                                size: 24,
-                                  ),
-                                ],
-                              ),
-                            ),
+                            ],
+                          ),
+                        ),
                         
                         // Related Videos List
-                          Expanded(
-                              child: FutureBuilder<ApiCallResponse>(
-                                future: (_model.apiRequestCompleter ??=
-                                        Completer<ApiCallResponse>()
-                                          ..complete(TestApiYoutubeCall.call()))
-                                    .future,
-                                builder: (context, snapshot) {
-                                  if (!snapshot.hasData) {
-                                    return Center(
-                                  child: Container(
-                                    width: 60,
-                                    height: 60,
-                                    decoration: BoxDecoration(
-                                      color: FlutterFlowTheme.of(context).primary.withOpacity(0.2),
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                        child: CircularProgressIndicator(
+                        Expanded(
+                          child: FutureBuilder<ApiCallResponse>(
+                            future: VideosCall.call(),
+                            builder: (context, snapshot) {
+                              // Customize what your widget looks like when it's loading.
+                              if (!snapshot.hasData) {
+                                return Center(
+                                  child: SizedBox(
+                                    width: 50.0,
+                                    height: 50.0,
+                                    child: CircularProgressIndicator(
                                       valueColor: AlwaysStoppedAnimation<Color>(
                                         Color(0xFFC8AB6B),
-                                          ),
-                                      strokeWidth: 3,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+                              
+                              final listViewVideosResponse = snapshot.data!;
+                              
+                              return Builder(
+                                builder: (context) {
+                                  final videos = getJsonField(
+                                    listViewVideosResponse.jsonBody,
+                                    r'''$.items''',
+                                  ).toList();
+                                  
+                                  // Filter out the current video
+                                  final relatedVideos = videos.where((video) {
+                                    final videoId = getJsonField(video, r'''$.id.videoId''').toString();
+                                    return videoId != widget.videoID;
+                                  }).toList();
+                                  
+                                  if (relatedVideos.isEmpty) {
+                                    return Center(
+                                      child: Text(
+                                        'Aucune vidéo similaire disponible',
+                                        style: GoogleFonts.changa(
+                                          color: Colors.white70,
+                                          fontSize: 14,
                                         ),
                                       ),
                                     );
                                   }
-                              final listViewTestApiYoutubeResponse = snapshot.data!;
-
-                                  return Builder(
-                                    builder: (context) {
-                                      final items = TestApiYoutubeCall.items(
-                                        listViewTestApiYoutubeResponse.jsonBody,
-                                          )?.toList() ??
-                                          [];
-
-                                      return RefreshIndicator(
-                                        onRefresh: () async {
-                                      safeSetState(
-                                          () => _model.apiRequestCompleter = null);
-                                      await _model.waitForApiRequestCompleted();
-                                        },
-                                    color: Color(0xFFC8AB6B),
-                                    backgroundColor: FlutterFlowTheme.of(context).primary,
-                                        child: ListView.builder(
-                                      padding: EdgeInsets.only(bottom: 20, left: 16, right: 16),
-                                          shrinkWrap: true,
-                                          scrollDirection: Axis.vertical,
-                                          itemCount: items.length,
-                                          itemBuilder: (context, itemsIndex) {
-                                            final itemsItem = items[itemsIndex];
-                                        return Padding(
-                                          padding: EdgeInsets.only(bottom: 16),
-                                                        child: InkWell(
-                                            splashColor: Colors.transparent,
-                                            focusColor: Colors.transparent,
-                                            hoverColor: Colors.transparent,
-                                            highlightColor: Colors.transparent,
-                                                          onTap: () async {
-                                                            // Stop all videos before navigating
-                                                            VideoControllerManager().stopAllVideos();
-                                                            
-                                                            final videoIdValue = TestApiYoutubeCall.vIdeoID(
-                                                              listViewTestApiYoutubeResponse.jsonBody,
-                                                            )?.elementAtOrNull(itemsIndex);
-                                                            
-                                                            if (videoIdValue != null && videoIdValue.isNotEmpty) {
-                                                            context.pushNamed(
-                                                                VideopageWidget.routeName,
-                                                                pathParameters: {
-                                                                  'videoID': videoIdValue,
-                                                                },
-                                                              );
-                                                            }
-                                                          },
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                gradient: LinearGradient(
-                                                  colors: [
-                                                    Colors.white.withOpacity(0.08),
-                                                    Colors.white.withOpacity(0.03),
-                                                  ],
-                                                  begin: Alignment.topLeft,
-                                                  end: Alignment.bottomRight,
-                                                ),
-                                                borderRadius: BorderRadius.circular(16),
-                                                border: Border.all(
-                                                  color: Colors.white.withOpacity(0.1),
-                                                  width: 1,
-                                                                ),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Colors.black.withOpacity(0.2),
-                                                    blurRadius: 8,
-                                                    offset: Offset(0, 4),
-                                                  ),
-                                                ],
-                                              ),
-                                              child: Padding(
-                                                padding: EdgeInsets.all(16),
-                                                child: Row(
-                                                  children: [
-                                                    // Thumbnail
-                                                    Container(
-                                                      width: 120,
-                                                      height: 90,
-                                                      decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(12),
-                                                        boxShadow: [
-                                                          BoxShadow(
-                                                            color: Colors.black.withOpacity(0.3),
-                                                            blurRadius: 6,
-                                                            offset: Offset(0, 2),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      child: ClipRRect(
-                                                        borderRadius: BorderRadius.circular(12),
-                                                        child: Stack(
-                                                          children: [
-                                                            Image.network(
-                                                              (TestApiYoutubeCall.image(
-                                                                listViewTestApiYoutubeResponse.jsonBody,
-                                                              )!.elementAtOrNull(itemsIndex))!,
-                                                              width: 120,
-                                                              height: 90,
-                                                              fit: BoxFit.cover,
-                                                            ),
-                                                            // Play overlay
-                                                            Center(
-                                                            child: Container(
-                                                                width: 40,
-                                                                height: 40,
-                                                                decoration: BoxDecoration(
-                                                                  color: Colors.black.withOpacity(0.7),
-                                                                  shape: BoxShape.circle,
-                                                              ),
-                                                                child: Icon(
-                                                                  Icons.play_arrow,
-                                                                  color: Color(0xFFC8AB6B),
-                                                                  size: 24,
-                                                                            ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                    SizedBox(width: 16),
-                                                    
-                                                    // Content
-                                                                          Expanded(
-                                                      child: Column(
-                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                              children: [
-                                                                                Text(
-                                                                                  valueOrDefault<String>(
-                                                                                    TestApiYoutubeCall.title(
-                                                                                      listViewTestApiYoutubeResponse.jsonBody,
-                                                                                    )?.elementAtOrNull(itemsIndex),
-                                                              'عنوان الفيديو',
-                                                                                  ),
-                                                            style: GoogleFonts.changa(
-                                                              color: Colors.white,
-                                                              fontSize: 16,
-                                                              fontWeight: FontWeight.w600,
-                                                              height: 1.3,
-                                                            ),
-                                                            maxLines: 2,
-                                                            overflow: TextOverflow.ellipsis,
-                                                                                      ),
-                                                          SizedBox(height: 8),
-                                                          
-                                                          // Video stats
-                                                          FutureBuilder<ApiCallResponse>(
-                                                            future: GetChannelVideosCall.call(
-                                                              videoid: TestApiYoutubeCall.vIdeoID(
-                                                                              listViewTestApiYoutubeResponse.jsonBody,
-                                                                            )?.elementAtOrNull(itemsIndex),
-                                                                          ),
-                                                            builder: (context, snapshot) {
-                                                                            if (!snapshot.hasData) {
-                                                                return Container(
-                                                                  height: 20,
-                                                                  child: Row(
-                                                                    children: [
-                                                                      Container(
-                                                                        width: 40,
-                                                                        height: 12,
-                                                                        decoration: BoxDecoration(
-                                                                          color: Colors.white.withOpacity(0.1),
-                                                                          borderRadius: BorderRadius.circular(6),
-                                                                                    ),
-                                                                                  ),
-                                                                    ],
-                                                                                ),
-                                                                              );
-                                                                            }
-                                                              final containerGetChannelVideosResponse = snapshot.data!;
-
-                                                              return Row(
-                                                                children: [
-                                                                  Icon(
-                                                                    Icons.visibility_outlined,
-                                                                    color: Color(0xFFC8AB6B),
-                                                                    size: 16,
-                                                                  ),
-                                                                  SizedBox(width: 4),
-                                                                                  Text(
-                                                                                    valueOrDefault<String>(
-                                                                                      GetChannelVideosCall.views(
-                                                                                        containerGetChannelVideosResponse.jsonBody,
-                                                                                      ),
-                                                                      '0',
-                                                                                    ),
-                                                                    style: GoogleFonts.lato(
-                                                                      color: Colors.white70,
-                                                                      fontSize: 12,
-                                                                      fontWeight: FontWeight.w500,
-                                                                                        ),
-                                                                                  ),
-                                                                  SizedBox(width: 16),
-                                                                  Icon(
-                                                                    Icons.thumb_up_outlined,
-                                                                    color: Color(0xFFC8AB6B),
-                                                                    size: 16,
-                                                                                    ),
-                                                                  SizedBox(width: 4),
-                                                                                  Text(
-                                                                                    valueOrDefault<String>(
-                                                                                      GetChannelVideosCall.like(
-                                                                                        containerGetChannelVideosResponse.jsonBody,
-                                                                                      ),
-                                                                      '0',
-                                                                                    ),
-                                                                    style: GoogleFonts.lato(
-                                                                      color: Colors.white70,
-                                                                      fontSize: 12,
-                                                                      fontWeight: FontWeight.w500,
-                                                                                    ),
-                                                                                  ),
-                                                                                ],
-                                                                            );
-                                                                          },
-                                                                    ),
-                                                                  ],
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
+                                  
+                                  return ListView.builder(
+                                    padding: EdgeInsets.zero,
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.vertical,
+                                    itemCount: relatedVideos.length,
+                                    itemBuilder: (context, relatedVideosIndex) {
+                                      final relatedVideosItem = relatedVideos[relatedVideosIndex];
+                                      return InkWell(
+                                        splashColor: Colors.transparent,
+                                        focusColor: Colors.transparent,
+                                        hoverColor: Colors.transparent,
+                                        highlightColor: Colors.transparent,
+                                        onTap: () async {
+                                          // Stop current video before navigating
+                                          VideoControllerManager().stopAllVideos();
+                                          
+                                          await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => VideopageWidget(
+                                                videoID: getJsonField(
+                                                  relatedVideosItem,
+                                                  r'''$.id.videoId''',
+                                                ).toString(),
                                               ),
                                             ),
+                                          );
+                                        },
+                                        child: Container(
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                            color: Colors.transparent,
                                           ),
-                                            );
-                                          },
+                                          child: Padding(
+                                            padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                // Thumbnail
+                                                ClipRRect(
+                                                  borderRadius: BorderRadius.circular(12.0),
+                                                  child: Image.network(
+                                                    getJsonField(
+                                                      relatedVideosItem,
+                                                      r'''$.snippet.thumbnails.medium.url''',
+                                                    ).toString(),
+                                                    width: 140.0,
+                                                    height: 90.0,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                                
+                                                SizedBox(width: 12),
+                                                
+                                                // Video Info
+                                                Expanded(
+                                                  child: Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        getJsonField(
+                                                          relatedVideosItem,
+                                                          r'''$.snippet.title''',
+                                                        ).toString(),
+                                                        maxLines: 2,
+                                                        overflow: TextOverflow.ellipsis,
+                                                        style: GoogleFonts.changa(
+                                                          color: Colors.white,
+                                                          fontSize: 14,
+                                                          fontWeight: FontWeight.w500,
+                                                          height: 1.3,
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 8),
+                                                      Text(
+                                                        getJsonField(
+                                                          relatedVideosItem,
+                                                          r'''$.snippet.channelTitle''',
+                                                        ).toString(),
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow.ellipsis,
+                                                        style: GoogleFonts.changa(
+                                                          color: Colors.white60,
+                                                          fontSize: 12,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                         ),
                                       );
                                     },
                                   );
                                 },
-                              ),
-                            ),
+                              );
+                            },
+                          ),
+                        ),
                       ],
                     ),
                   ),
                 ),
-                SizedBox(height: 16),
-                ],
+              ],
             ),
           ),
         ),
