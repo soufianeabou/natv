@@ -31,8 +31,6 @@ class LiveCopyCopyWidget extends StatefulWidget {
 class _LiveCopyCopyWidgetState extends State<LiveCopyCopyWidget> {
   late LiveCopyCopyModel _model;
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  bool _isFullscreen = false;
-  static const platform = MethodChannel('com.northafricatv.app/fullscreen');
 
   @override
   void initState() {
@@ -40,6 +38,7 @@ class _LiveCopyCopyWidgetState extends State<LiveCopyCopyWidget> {
     _model = createModel(context, () => LiveCopyCopyModel());
     _model.switchValue = FlutterFlowModel.globalSwitchValue;
     
+    // Start portrait-locked
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
@@ -56,126 +55,29 @@ class _LiveCopyCopyWidgetState extends State<LiveCopyCopyWidget> {
     super.dispose();
   }
 
-  void _enterFullscreen() async {
-  setState(() {
-    _isFullscreen = true;
-  });
-  
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.landscapeLeft,
-    DeviceOrientation.landscapeRight,
-  ]);
-  
-  try {
-    await platform.invokeMethod('enterFullscreen');
-  } catch (e) {
-    print('Error entering fullscreen: $e');
+  // Handle WebView fullscreen changes
+  void _handleFullscreenChange(bool isFullscreen) {
+    if (isFullscreen) {
+      // WebView entered fullscreen - allow landscape
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ]);
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    } else {
+      // WebView exited fullscreen - lock back to portrait
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+      ]);
+      SystemChrome.setEnabledSystemUIMode(
+        SystemUiMode.edgeToEdge,
+        overlays: SystemUiOverlay.values,
+      );
+    }
   }
-}
-
-void _exitFullscreen() async {
-  setState(() {
-    _isFullscreen = false;
-  });
-  
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-  ]);
-  
-  try {
-    await platform.invokeMethod('exitFullscreen');
-  } catch (e) {
-    print('Error exiting fullscreen: $e');
-  }
-  
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    SystemChrome.setEnabledSystemUIMode(
-      SystemUiMode.edgeToEdge,
-      overlays: SystemUiOverlay.values,
-    );
-  });
-}
 
   @override
   Widget build(BuildContext context) {
-    // Fullscreen landscape mode
-    // Fullscreen landscape mode
-// Fullscreen landscape mode
-// Fullscreen landscape mode
-if (_isFullscreen) {
-  return WillPopScope(
-    onWillPop: () async {
-      _exitFullscreen();
-      return false;
-    },
-    child: MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(),
-      home: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.light,
-          systemNavigationBarColor: Colors.transparent,
-          systemNavigationBarDividerColor: Colors.transparent,
-          systemNavigationBarIconBrightness: Brightness.light,
-        ),
-        child: Scaffold(
-          backgroundColor: Colors.black,
-          body: Container(
-            color: Colors.black,
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: FlutterFlowWebView(
-                    content: 'https://mn-nl.mncdn.com/nafrica_tv/live/index.m3u8',
-                    bypass: false,
-                    width: MediaQuery.sizeOf(context).width,
-                    height: MediaQuery.sizeOf(context).height,
-                    verticalScroll: false,
-                    horizontalScroll: false,
-                    onControllerCreated: (controller) {
-                      VideoControllerManager().registerLiveStream(controller);
-                    },
-                  ),
-                ),
-                Positioned(
-                  top: 16,
-                  right: 16,
-                  child: SafeArea(
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: _exitFullscreen,
-                        child: Container(
-                          padding: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.6),
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: Colors.white.withOpacity(0.3),
-                              width: 1,
-                            ),
-                          ),
-                          child: Icon(
-                            Icons.fullscreen_exit,
-                            color: Colors.white,
-                            size: 32,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    ),
-  );
-}
-
-    // Normal portrait mode
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -278,33 +180,24 @@ if (_isFullscreen) {
                               ),
                             ),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 8,
-                                      height: 8,
-                                      decoration: BoxDecoration(
-                                        color: Color(0xFFC8AB6B),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      margin: EdgeInsets.only(right: 6),
-                                    ),
-                                    Text(
-                                      'البث المباشر',
-                                      style: GoogleFonts.changa(
-                                        color: Colors.white,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
+                                Container(
+                                  width: 8,
+                                  height: 8,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFFC8AB6B),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  margin: EdgeInsets.only(right: 6),
                                 ),
-                                IconButton(
-                                  icon: Icon(Icons.fullscreen, color: Color(0xFFC8AB6B), size: 24),
-                                  onPressed: _enterFullscreen,
-                                  tooltip: 'ملء الشاشة',
+                                Text(
+                                  'البث المباشر',
+                                  style: GoogleFonts.changa(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               ],
                             ),
@@ -321,6 +214,7 @@ if (_isFullscreen) {
                               onControllerCreated: (controller) {
                                 VideoControllerManager().registerLiveStream(controller);
                               },
+                              onFullscreenChanged: _handleFullscreenChange,
                             ),
                           ),
                         ],

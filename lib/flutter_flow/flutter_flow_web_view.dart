@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
@@ -15,6 +16,7 @@ class FlutterFlowWebView extends StatefulWidget {
     this.verticalScroll = false,
     this.html = false,
     this.onControllerCreated,
+    this.onFullscreenChanged,
   }) : super(key: key);
 
   final String content;
@@ -25,6 +27,7 @@ class FlutterFlowWebView extends StatefulWidget {
   final bool verticalScroll;
   final bool html;
   final Function(WebViewController)? onControllerCreated;
+  final Function(bool)? onFullscreenChanged;
 
   @override
   State<FlutterFlowWebView> createState() => _FlutterFlowWebViewState();
@@ -40,6 +43,14 @@ class _FlutterFlowWebViewState extends State<FlutterFlowWebView> {
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(Colors.black)
+      ..addJavaScriptChannel(
+        'FlutterFullscreen',
+        onMessageReceived: (JavaScriptMessage message) {
+          // Detect fullscreen changes
+          final isFullscreen = message.message == 'true';
+          widget.onFullscreenChanged?.call(isFullscreen);
+        },
+      )
       ..setNavigationDelegate(
         NavigationDelegate(
           onPageStarted: (String url) {
@@ -47,18 +58,30 @@ class _FlutterFlowWebViewState extends State<FlutterFlowWebView> {
           },
           onPageFinished: (String url) {
             print('FlutterFlowWebView: Page finished loading: $url');
-            // Hide fullscreen button via CSS injection
+            
+            // Inject JavaScript to detect fullscreen changes
             _controller.runJavaScript('''
               (function() {
-                var style = document.createElement('style');
-                style.innerHTML = `
-                  video::-webkit-media-controls-fullscreen-button { display: none !important; }
-                  video::-moz-media-controls-fullscreen-button { display: none !important; }
-                  .vjs-fullscreen-control { display: none !important; }
-                  button[aria-label*="fullscreen" i] { display: none !important; }
-                  button[aria-label*="full screen" i] { display: none !important; }
-                `;
-                document.head.appendChild(style);
+                // Listen for fullscreen changes
+                document.addEventListener('fullscreenchange', function() {
+                  var isFullscreen = !!document.fullscreenElement;
+                  FlutterFullscreen.postMessage(isFullscreen.toString());
+                });
+                
+                document.addEventListener('webkitfullscreenchange', function() {
+                  var isFullscreen = !!document.webkitFullscreenElement;
+                  FlutterFullscreen.postMessage(isFullscreen.toString());
+                });
+                
+                document.addEventListener('mozfullscreenchange', function() {
+                  var isFullscreen = !!document.mozFullScreenElement;
+                  FlutterFullscreen.postMessage(isFullscreen.toString());
+                });
+                
+                document.addEventListener('msfullscreenchange', function() {
+                  var isFullscreen = !!document.msFullscreenElement;
+                  FlutterFullscreen.postMessage(isFullscreen.toString());
+                });
               })();
             ''');
           },

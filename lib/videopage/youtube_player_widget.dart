@@ -18,11 +18,14 @@ class YouTubePlayerWidget extends StatefulWidget {
 }
 
 class _YouTubePlayerWidgetState extends State<YouTubePlayerWidget>
-    with WidgetsBindingObserver {
+    with WidgetsBindingObserver, AutomaticKeepAliveClientMixin {
   late YoutubePlayerController _controller;
   bool _isPlayerReady = false;
-  bool _isFullscreen = false;
+  bool _wasFullscreen = false; // Track previous fullscreen state
   final _manager = VideoControllerManager();
+  
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -34,7 +37,7 @@ class _YouTubePlayerWidgetState extends State<YouTubePlayerWidget>
       initialVideoId: widget.videoId,
       flags: const YoutubePlayerFlags(
         mute: false,
-        autoPlay: false,
+        autoPlay: true,
         disableDragSeek: false,
         loop: false,
         isLive: false,
@@ -49,6 +52,7 @@ class _YouTubePlayerWidgetState extends State<YouTubePlayerWidget>
     
     _controller.addListener(_onPlayerStateChanged);
     _manager.registerController(_controller);
+    
     print('YouTube Player initializing with video ID: ${widget.videoId}');
   }
 
@@ -58,61 +62,38 @@ class _YouTubePlayerWidgetState extends State<YouTubePlayerWidget>
     final isReady = _controller.value.isReady;
     final isFullscreen = _controller.value.isFullScreen;
     
-    // Handle fullscreen state changes
-    if (isFullscreen != _isFullscreen) {
+    // Only handle fullscreen changes when state ACTUALLY changes
+    if (isFullscreen != _wasFullscreen) {
+      _wasFullscreen = isFullscreen;
+      
       if (isFullscreen) {
-        _enterFullscreen();
+        print('Entering fullscreen');
+        _manager.setYouTubeFullscreen(true);
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.landscapeLeft,
+          DeviceOrientation.landscapeRight,
+        ]);
+        SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
       } else {
-        _exitFullscreen();
+        print('Exiting fullscreen');
+        _manager.setYouTubeFullscreen(false);
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.portraitUp,
+        ]);
+        SystemChrome.setEnabledSystemUIMode(
+          SystemUiMode.edgeToEdge,
+          overlays: SystemUiOverlay.values,
+        );
       }
     }
     
-    // Update ready state
     if (_isPlayerReady != isReady) {
-      setState(() {
-        _isPlayerReady = isReady;
-      });
+      if (mounted) {
+        setState(() {
+          _isPlayerReady = isReady;
+        });
+      }
     }
-  }
-
-  void _enterFullscreen() {
-    if (_isFullscreen) return;
-    
-    setState(() {
-      _isFullscreen = true;
-    });
-    
-    // Set system UI for fullscreen
-    SystemChrome.setEnabledSystemUIMode(
-      SystemUiMode.immersiveSticky,
-      overlays: [],
-    );
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.portraitUp,
-    ]);
-    
-    print('YouTube Player: Entered fullscreen mode');
-  }
-
-  void _exitFullscreen() {
-    if (!_isFullscreen) return;
-    
-    setState(() {
-      _isFullscreen = false;
-    });
-    
-    // Restore system UI
-    SystemChrome.setEnabledSystemUIMode(
-      SystemUiMode.edgeToEdge,
-      overlays: SystemUiOverlay.values,
-    );
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
-    
-    print('YouTube Player: Exited fullscreen mode');
   }
 
   @override
@@ -129,7 +110,6 @@ class _YouTubePlayerWidgetState extends State<YouTubePlayerWidget>
         break;
       case AppLifecycleState.resumed:
       case AppLifecycleState.inactive:
-        // Do nothing, let user control playback
         break;
     }
   }
@@ -144,9 +124,9 @@ class _YouTubePlayerWidgetState extends State<YouTubePlayerWidget>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _manager.unregisterController(_controller);
+    _manager.setYouTubeFullscreen(false);
     _controller.removeListener(_onPlayerStateChanged);
     
-    // Restore orientation on dispose
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
@@ -157,46 +137,43 @@ class _YouTubePlayerWidgetState extends State<YouTubePlayerWidget>
 
   @override
   Widget build(BuildContext context) {
-    return YoutubePlayerBuilder(
-      player: YoutubePlayer(
-        controller: _controller,
-        showVideoProgressIndicator: true,
-        progressIndicatorColor: const Color(0xFFC8AB6B),
-        progressColors: const ProgressBarColors(
-          playedColor: Color(0xFFC8AB6B),
-          handleColor: Color(0xFFC8AB6B),
+    super.build(context);
+    
+    return Container(
+      height: widget.height,
+      decoration: BoxDecoration(
+        color: Colors.black,
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(20),
+          bottomRight: Radius.circular(20),
         ),
-        onReady: () {
-          setState(() {
-            _isPlayerReady = true;
-          });
-          print('YouTube Player Ready - Video ID: ${widget.videoId}');
-        },
-        onEnded: (data) {
-          print('YouTube Player: Video ended');
-        },
       ),
-      builder: (context, player) {
-        return Container(
-          height: _isFullscreen ? null : widget.height,
-          decoration: _isFullscreen ? null : BoxDecoration(
-            color: Colors.black,
-            borderRadius: const BorderRadius.only(
-              bottomLeft: Radius.circular(20),
-              bottomRight: Radius.circular(20),
-            ),
+      child: ClipRRect(
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(20),
+          bottomRight: Radius.circular(20),
+        ),
+        child: YoutubePlayer(
+          controller: _controller,
+          showVideoProgressIndicator: true,
+          progressIndicatorColor: const Color(0xFFC8AB6B),
+          progressColors: const ProgressBarColors(
+            playedColor: Color(0xFFC8AB6B),
+            handleColor: Color(0xFFC8AB6B),
           ),
-          child: _isFullscreen 
-            ? player 
-            : ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(20),
-                  bottomRight: Radius.circular(20),
-                ),
-                child: player,
-              ),
-        );
-      },
+          onReady: () {
+            if (mounted) {
+              setState(() {
+                _isPlayerReady = true;
+              });
+            }
+            print('YouTube Player Ready - Video ID: ${widget.videoId}');
+          },
+          onEnded: (data) {
+            print('YouTube Player: Video ended');
+          },
+        ),
+      ),
     );
   }
 }

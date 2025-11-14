@@ -6,6 +6,7 @@ import '/flutter_flow/flutter_flow_widgets.dart';
 import 'dart:ui';
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -20,7 +21,6 @@ class VideopageWidget extends StatefulWidget {
     required this.videoID,
   });
 
-  /// VideoID
   final String? videoID;
 
   static String routeName = 'videopage';
@@ -30,35 +30,90 @@ class VideopageWidget extends StatefulWidget {
   State<VideopageWidget> createState() => _VideopageWidgetState();
 }
 
-class _VideopageWidgetState extends State<VideopageWidget> {
+class _VideopageWidgetState extends State<VideopageWidget> with AutomaticKeepAliveClientMixin {
   late VideopageModel _model;
-
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  Widget? _cachedPlayer; // Cache the player widget
+  
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
     super.initState();
     _model = createModel(context, () => VideopageModel());
     
-    // Debug: Print videoID to verify it's being received
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+    
     if (widget.videoID != null && widget.videoID!.isNotEmpty) {
       print('VideoPage: Received videoID: ${widget.videoID}');
     } else {
       print('VideoPage: ERROR - videoID is null or empty!');
     }
     
-    // Stop any other videos that might be playing
     VideoControllerManager().stopAllVideos();
+    
+    // Create the player widget ONCE in initState
+    _cachedPlayer = (widget.videoID != null && widget.videoID!.isNotEmpty)
+        ? YouTubePlayerWidget(
+            key: GlobalKey(), // Use GlobalKey to maintain identity
+            videoId: widget.videoID!,
+            height: 240.0,
+          )
+        : Container(
+            height: 240.0,
+            margin: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.error_outline, color: Colors.white70, size: 48),
+                SizedBox(height: 16),
+                Text(
+                  'Erreur: Video ID manquant',
+                  style: GoogleFonts.changa(color: Colors.white, fontSize: 14),
+                ),
+              ],
+            ),
+          );
   }
 
   @override
   void dispose() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     _model.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+    
+    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    
+    // If in landscape, show ONLY the cached player fullscreen
+    if (isLandscape) {
+      return Scaffold(
+        backgroundColor: Colors.black,
+        body: Center(
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height,
+            child: _cachedPlayer!,
+          ),
+        ),
+      );
+    }
+    
+    // Portrait mode - show full UI
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -81,8 +136,10 @@ class _VideopageWidgetState extends State<VideopageWidget> {
               size: 30.0,
             ),
             onPressed: () async {
-              // Stop any playing videos before navigating back
               VideoControllerManager().stopAllVideos();
+              SystemChrome.setPreferredOrientations([
+                DeviceOrientation.portraitUp,
+              ]);
               Navigator.of(context).pop();
             },
           ),
@@ -107,9 +164,9 @@ class _VideopageWidgetState extends State<VideopageWidget> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Color(0xFF0F172A), // Dark navy
-                  Color(0xFF1E293B), // Slate
-                  FlutterFlowTheme.of(context).primary, // Brand blue
+                  Color(0xFF0F172A),
+                  Color(0xFF1E293B),
+                  FlutterFlowTheme.of(context).primary,
                 ],
                 stops: [0.0, 0.6, 1.0],
               ),
@@ -117,38 +174,8 @@ class _VideopageWidgetState extends State<VideopageWidget> {
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
-                // Video Player Section
-                (widget.videoID != null && widget.videoID!.isNotEmpty)
-                    ? YouTubePlayerWidget(
-                        videoId: widget.videoID!,
-                        height: 240.0,
-                      )
-                    : Container(
-                        height: 240.0,
-                        margin: EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.error_outline,
-                              color: Colors.white70,
-                              size: 48,
-                            ),
-                            SizedBox(height: 16),
-                            Text(
-                              'Erreur: Video ID manquant',
-                              style: GoogleFonts.changa(
-                                color: Colors.white,
-                                fontSize: 14,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                // Use the same cached player instance
+                _cachedPlayer!,
                 
                 // Related Videos Section
                 Expanded(
@@ -165,7 +192,6 @@ class _VideopageWidgetState extends State<VideopageWidget> {
                     ),
                     child: Column(
                       children: [
-                        // Section Header
                         Container(
                           width: double.infinity,
                           padding: EdgeInsets.all(20),
@@ -181,7 +207,7 @@ class _VideopageWidgetState extends State<VideopageWidget> {
                               ),
                               SizedBox(width: 12),
                               Text(
-                                'Vidéos Similaires',
+                                'مقاطع أخرى',
                                 style: GoogleFonts.changa(
                                   color: Colors.white,
                                   fontSize: 18,
@@ -193,12 +219,10 @@ class _VideopageWidgetState extends State<VideopageWidget> {
                           ),
                         ),
                         
-                        // Related Videos List
                         Expanded(
                           child: FutureBuilder<ApiCallResponse>(
                             future: TestApiYoutubeCall.call(),
                             builder: (context, snapshot) {
-                              // Customize what your widget looks like when it's loading.
                               if (!snapshot.hasData) {
                                 return Center(
                                   child: SizedBox(
@@ -222,7 +246,6 @@ class _VideopageWidgetState extends State<VideopageWidget> {
                                     r'''$.items''',
                                   ).toList();
                                   
-                                  // Filter out the current video
                                   final relatedVideos = videos.where((video) {
                                     final videoId = getJsonField(video, r'''$.snippet.resourceId.videoId''').toString();
                                     return videoId != widget.videoID;
@@ -253,7 +276,6 @@ class _VideopageWidgetState extends State<VideopageWidget> {
                                         hoverColor: Colors.transparent,
                                         highlightColor: Colors.transparent,
                                         onTap: () async {
-                                          // Stop current video before navigating
                                           VideoControllerManager().stopAllVideos();
                                           
                                           await Navigator.push(
@@ -279,7 +301,6 @@ class _VideopageWidgetState extends State<VideopageWidget> {
                                               mainAxisSize: MainAxisSize.max,
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                // Thumbnail
                                                 ClipRRect(
                                                   borderRadius: BorderRadius.circular(12.0),
                                                   child: Image.network(
@@ -295,7 +316,6 @@ class _VideopageWidgetState extends State<VideopageWidget> {
                                                 
                                                 SizedBox(width: 12),
                                                 
-                                                // Video Info
                                                 Expanded(
                                                   child: Column(
                                                     mainAxisSize: MainAxisSize.min,

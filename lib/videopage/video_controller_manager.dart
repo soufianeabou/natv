@@ -11,6 +11,7 @@ class VideoControllerManager {
   final Set<YoutubePlayerController> _activeControllers = {};
   WebViewController? _liveStreamController;
   bool _isLiveStreamActive = false;
+  bool _isYouTubeFullscreen = false; // NEW: Track YouTube fullscreen state
 
   /// Register a YouTube player controller
   void registerController(YoutubePlayerController controller) {
@@ -37,6 +38,15 @@ class VideoControllerManager {
     _isLiveStreamActive = false;
     print('VideoControllerManager: Unregistered live stream controller');
   }
+
+  /// Set YouTube fullscreen state
+  void setYouTubeFullscreen(bool isFullscreen) {
+    _isYouTubeFullscreen = isFullscreen;
+    print('VideoControllerManager: YouTube fullscreen = $isFullscreen');
+  }
+
+  /// Get YouTube fullscreen state
+  bool get isYouTubeFullscreen => _isYouTubeFullscreen;
 
   /// Check if live stream is currently active
   bool get isLiveStreamActive => _isLiveStreamActive;
@@ -114,6 +124,7 @@ class VideoControllerManager {
     _activeControllers.clear();
     _liveStreamController = null;
     _isLiveStreamActive = false;
+    _isYouTubeFullscreen = false;
     print('VideoControllerManager: Cleared all controllers');
   }
 
@@ -125,5 +136,6 @@ class VideoControllerManager {
     print('VideoControllerManager State:');
     print('  - YouTube controllers: ${_activeControllers.length}');
     print('  - Live stream active: $_isLiveStreamActive');
+    print('  - YouTube fullscreen: $_isYouTubeFullscreen');
   }
 }
