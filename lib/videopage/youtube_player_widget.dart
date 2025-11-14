@@ -158,14 +158,6 @@ class _YouTubePlayerWidgetState extends State<YouTubePlayerWidget>
   @override
   Widget build(BuildContext context) {
     return YoutubePlayerBuilder(
-      onEnterFullscreen: () {
-        // Additional handling if needed
-        print('YouTube Player: onEnterFullscreen callback');
-      },
-      onExitFullscreen: () {
-        // Additional handling if needed
-        print('YouTube Player: onExitFullscreen callback');
-      },
       player: YoutubePlayer(
         controller: _controller,
         showVideoProgressIndicator: true,

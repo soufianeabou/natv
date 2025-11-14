@@ -84,36 +84,14 @@ class _FlutterFlowWebViewState extends State<FlutterFlowWebView>
     ]);
   }
 
-  Future<List<PlatformFile>> _androidFilePicker(MultipleFileSelectionParams params) async {
-    FilePickerResult? result;
+  Future<List<String>> _androidFilePicker(FileSelectorParams params) async {
+    final result = await FilePicker.platform.pickFiles();
 
-    if (params.acceptedMimeTypes.isEmpty) {
-      result = await FilePicker.platform.pickFiles(
-        allowMultiple: params.isMultipleSelection,
-      );
-    } else if (params.acceptedMimeTypes.length == 1) {
-      final acceptedMimeType = params.acceptedMimeTypes.first;
-      FileType fileType = FileType.any;
-
-      if (acceptedMimeType == 'video/*') {
-        fileType = FileType.video;
-      } else if (acceptedMimeType == 'image/*') {
-        fileType = FileType.image;
-      } else if (acceptedMimeType == 'audio/*') {
-        fileType = FileType.audio;
-      }
-
-      result = await FilePicker.platform.pickFiles(
-        type: fileType,
-        allowMultiple: params.isMultipleSelection,
-      );
+    if (result != null && result.files.single.path != null) {
+      final file = File(result.files.single.path!);
+      return [file.uri.toString()];
     }
-
-    if (result == null) {
-      throw Exception('FilePicker returned null');
-    }
-
-    return result.files;
+    return [];
   }
 
   @override
